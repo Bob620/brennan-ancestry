@@ -62,6 +62,7 @@ async function getData(variables, redis) {
 					} else {
 						expectedTotal = parseInt(body.match(/Results .{1,10}&ndash;.{1,10} of (.{1,20})<\/h3>/)[1].replace(/,/g, '').trim());
 						const table = body.slice(body.search(/(<table.+)/g), body.search(/(<\/table>)/g)) + '</table>';
+						const pids = getMatches(body, /pid="(.*?)"/g).map(parseInt);
 
 						let tableText = [];
 
@@ -75,7 +76,6 @@ async function getData(variables, redis) {
 						parser.end();
 
 						let next = false;
-						let index = 0;
 						const names = tableText.filter(text => {
 							if (next && text === 'Name')
 								next = false;
@@ -90,7 +90,7 @@ async function getData(variables, redis) {
 							return {
 								name,
 								arrival: variables.arrival ? variables.arrival.split('-')[0] : '0000',
-								index: currentSet + index++,
+								index: pids.shift(),
 								collection: variables.collection,
 								gender: variables.gender ? variables.gender : '?'
 							}
@@ -156,3 +156,11 @@ new Promise(async (resolve, reject) => {
 }).catch(err => {
 	console.warn(err);
 });
+
+function getMatches(string, regex) {
+	let matches = [];
+	let match;
+	while (match = regex.exec(string))
+		matches.push(match[1]);
+	return matches;
+}
