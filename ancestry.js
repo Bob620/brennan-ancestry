@@ -50,7 +50,8 @@ module.exports = {
 								arrival: arrival ? arrival.split('-')[0] : '0000',
 								index: pids.shift(),
 								collection: collection,
-								gender: gender ? gender : '?'
+								gender: gender ? gender : '?',
+								birth: birth? birth.split('-')[0] : '0000'
 							}
 						}), expectedTotal});
 					}

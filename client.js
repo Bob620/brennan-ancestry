@@ -59,7 +59,7 @@ const messageTypeCB = {
 };
 
 function processEntries(entries, redis) {
-	for (const {name, arrival, index, collection, gender} of entries) {
+	for (const {name, arrival, index, collection, gender, birth} of entries) {
 		const hasher = crypto.createHash('sha256');
 		hasher.update(name+arrival+collection+index);
 		const hash = hasher.digest().toString('base64');
@@ -76,6 +76,7 @@ function processEntries(entries, redis) {
 		redis.set(`data-hashes-${hash}-name`, name);
 		redis.set(`data-hashes-${hash}-collection`, collection);
 		redis.set(`data-hashes-${hash}-arrival`, arrival);
+		redis.set(`data-hashes-${hash}-birth`, birth);
 		redis.set(`data-hashes-${hash}-gender`, gender);
 		redis.set(`data-hashes-${hash}-index`, index);
 	}
