@@ -66,11 +66,11 @@ function processEntries(entries, redis) {
 
 		redis.sadd(`data-names`, name);
 		redis.sadd(`data-hashes`, hash);
-		redis.sadd(`data-arrivals`, hash);
-		redis.sadd(`data-collections`, hash);
+		redis.sadd(`data-arrivals`, arrival);
+		redis.sadd(`data-collections`, collection);
 
 		redis.sadd(`data-arrivals-${arrival}`, hash);
-		redis.sadd(`data-collection-${collection}`, hash);
+		redis.sadd(`data-collections-${collection}`, hash);
 		redis.sadd(`data-names-${name}`, hash);
 
 		redis.set(`data-hashes-${hash}-name`, name);
