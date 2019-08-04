@@ -29,11 +29,20 @@ comm.onMessage(async (channel, message) => {
 });
 
 const messageTypeCB = {
-	getPage: async (settings, redis) => {
-		const {entries, expectedTotal} = await ancestry.getPage(settings.collection, settings.arrival, settings.arrivalX, settings.birth, settings.birthX, settings.gender, settings.fh, settings.count);
-		processEntries(entries, redis);
-		return {entries, expectedTotal};
-	},
+	getPage: (settings, redis) => new Promise(async (resolve, reject) => {
+		let attempt = 0;
+		while (attempt !== constants.maxRetries)
+			try {
+				const {entries, expectedTotal} = await ancestry.getPage(settings.collection, settings.arrival, settings.arrivalX, settings.birth, settings.birthX, settings.gender, settings.fh, settings.count);
+				processEntries(entries, redis);
+				resolve({entries, expectedTotal});
+				return;
+			} catch(err) {
+				attempt++;
+			}
+
+		reject();
+	}),
 	getSearch: async (message, comm) => {
 		let currentPage = parseInt(message.data.fh);
 		let total = currentPage + 2;

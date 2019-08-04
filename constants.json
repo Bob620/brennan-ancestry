@@ -16,5 +16,6 @@
     "canadianpl",
     "vistcroixrecords",
     "pili354"
-  ]
+  ],
+  "maxRetries": 5
 }
